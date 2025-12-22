@@ -1,0 +1,39 @@
+[package]
+name = "pic-od"
+version = "0.1.0"
+edition = "2024"
+description = "A CLI tool for uploading images using OpenDAL"
+license = "Apache-2.0"
+repository = "https://github.com/frostming/pic-opendal"
+keywords = ["cli", "image", "upload", "opendal", "s3"]
+categories = ["command-line-utilities"]
+
+[[bin]]
+name = "pic-od"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1"
+chrono = "0.4"
+clap = { version = "4", features = ["derive", "env"] }
+dirs = "6"
+opendal = { version = "0.55", features = [
+  "services-azblob",
+  "services-azdls",
+  "services-cos",
+  "services-fs",
+  "services-gcs",
+  "services-ghac",
+  "services-http",
+  "services-ipmfs",
+  "services-obs",
+  "services-oss",
+  "services-s3",
+  "services-webdav",
+  "services-webhdfs",
+  "services-azfile",
+  "services-dropbox",
+] }
+serde = { version = "1", features = ["derive"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "fs"] }
+toml = "0.8"
