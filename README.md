@@ -73,10 +73,10 @@ pic-od upload image1.png image2.jpg image3.gif
 
 # Use a specific profile
 pic-od upload -t backup image.png
-pic-od upload --target backup image.png
+pic-od upload --profile backup image.png
 
 # Use environment variable
-PIC_OD_TARGET=backup pic-od upload image.png
+PIC_OD_PROFILE=backup pic-od upload image.png
 ```
 
 ### Manage profiles
@@ -86,7 +86,7 @@ PIC_OD_TARGET=backup pic-od upload image.png
 pic-od list
 
 # Set current profile
-pic-od target backup
+pic-od profile backup
 ```
 
 ## Integrations

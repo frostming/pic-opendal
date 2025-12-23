@@ -20,14 +20,14 @@ enum Commands {
     /// Upload images and return URLs
     Upload {
         /// Use a specific profile for this command
-        #[arg(short, long, env = "PIC_OD_TARGET")]
-        target: Option<String>,
+        #[arg(short, long, env = "PIC_OD_PROFILE")]
+        profile: Option<String>,
         /// Image paths to upload
         #[arg(required = true)]
         paths: Vec<PathBuf>,
     },
     /// Set the current target profile
-    Target {
+    Profile {
         /// Profile name to set as current
         name: String,
     },
@@ -40,9 +40,9 @@ async fn main() -> Result<()> {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Upload { target, paths } => {
+        Commands::Upload { profile, paths } => {
             let config = Config::load()?;
-            let profile = config.get_profile(target.as_deref())?;
+            let profile = config.get_profile(profile.as_deref())?;
             let uploader = Uploader::new(profile)?;
 
             let path_refs: Vec<_> = paths.iter().map(|p| p.as_path()).collect();
@@ -55,7 +55,7 @@ async fn main() -> Result<()> {
                 }
             }
         }
-        Commands::Target { name } => {
+        Commands::Profile { name } => {
             let mut config = Config::load()?;
             config.set_current_profile(&name)?;
             println!("Current profile set to: {}", name);

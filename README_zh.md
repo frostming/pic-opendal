@@ -73,10 +73,10 @@ pic-od upload image1.png image2.jpg image3.gif
 
 # 使用指定配置
 pic-od upload -t backup image.png
-pic-od upload --target backup image.png
+pic-od upload --profile backup image.png
 
 # 使用环境变量
-PIC_OD_TARGET=backup pic-od upload image.png
+PIC_OD_PROFILE=backup pic-od upload image.png
 ```
 
 ### 管理配置
@@ -86,7 +86,7 @@ PIC_OD_TARGET=backup pic-od upload image.png
 pic-od list
 
 # 设置当前配置
-pic-od target backup
+pic-od profile backup
 ```
 
 ## 集成
