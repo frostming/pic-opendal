@@ -11,6 +11,12 @@ pub struct Uploader {
     filename_format: Option<String>,
 }
 
+fn content_type_for_path(path: &Path) -> String {
+    mime_guess::from_path(path)
+        .first_or_octet_stream()
+        .to_string()
+}
+
 impl Uploader {
     pub fn new(profile: &Profile) -> Result<Self> {
         let operator = Self::build_operator(&profile.scheme, &profile.options)?;
@@ -35,8 +41,11 @@ impl Uploader {
 
         eprintln!("Uploading {} -> {}", path.display(), remote_path);
 
+        let content_type = content_type_for_path(path);
+
         self.operator
-            .write(&remote_path, content)
+            .write_with(&remote_path, content)
+            .content_type(&content_type)
             .await
             .with_context(|| format!("Failed to upload to: {}", remote_path))?;
 
@@ -60,5 +69,40 @@ impl Uploader {
             results.push(self.upload(path).await);
         }
         results
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::content_type_for_path;
+    use std::path::Path;
+
+    #[test]
+    fn provides_mime_type_for_common_image_extensions() {
+        assert_eq!(content_type_for_path(Path::new("example.png")), "image/png");
+        assert_eq!(
+            content_type_for_path(Path::new("example.jpg")),
+            "image/jpeg"
+        );
+        assert_eq!(
+            content_type_for_path(Path::new("example.webp")),
+            "image/webp"
+        );
+    }
+
+    #[test]
+    fn handles_case_insensitive_extensions() {
+        assert_eq!(
+            content_type_for_path(Path::new("example.JPG")),
+            "image/jpeg"
+        );
+    }
+
+    #[test]
+    fn falls_back_to_octet_stream_for_unknown_extensions() {
+        assert_eq!(
+            content_type_for_path(Path::new("example.unknown-extension")),
+            "application/octet-stream"
+        );
     }
 }
